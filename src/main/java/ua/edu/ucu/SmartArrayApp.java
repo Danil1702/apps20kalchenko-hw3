@@ -4,12 +4,13 @@ import java.util.Arrays;
 import ua.edu.ucu.functions.MyComparator;
 import ua.edu.ucu.functions.MyFunction;
 import ua.edu.ucu.functions.MyPredicate;
+import ua.edu.ucu.smartarr.*;
 
 public class SmartArrayApp {
 
     public static Integer[]
-            filterPositiveIntegersSortAndMultiplyBy2(Integer[] integers) {
-                
+    filterPositiveIntegersSortAndMultiplyBy2(Integer[] integers) {
+
         MyPredicate pr = new MyPredicate() {
             @Override
             public boolean test(Object t) {
@@ -31,29 +32,58 @@ public class SmartArrayApp {
             }
         };
 
-        // Input: [-1, 2, 0, 1, -5, 3]
         SmartArray sa = new BaseArray(integers);
 
-        sa = new FilterDecorator(sa, pr); // Result: [2, 1, 3];
-        sa = new SortDecorator(sa, cmp); // Result: [1, 2, 3]
-        sa = new MapDecorator(sa, func); // Result: [2, 4, 6]
+        sa = new FilterDecorator(sa, pr);
+        sa = new SortDecorator(sa, cmp);
+        sa = new MapDecorator(sa, func);
 
-        // Alternative
-//        sa = new MapDecorator(
-//                    new SortDecorator(
-//                        new FilterDecorator(sa, pr),
-//                    cmp),
-//                func);
         Object[] result = sa.toArray();
         return Arrays.copyOf(result, result.length, Integer[].class);
     }
 
     public static String[]
-            findDistinctStudentNamesFrom2ndYearWithGPAgt4AndOrderedBySurname(Student[] students) {
+    findDistinctStudentNamesFrom2ndYearWithGPAgt4AndOrderedBySurname(Student[] students) {
+        MyPredicate predicate1 = new MyPredicate() {
+            @Override
+            public boolean test(Object student) {
+                return ((Student) student).getYear() == 2;
+            }
+        };
 
-        // Hint: to convert Object[] to String[] - use the following code
-        //Object[] result = studentSmartArray.toArray();
-        //return Arrays.copyOf(result, result.length, String[].class);
-        return null;
+        MyPredicate predicate2 = new MyPredicate() {
+            @Override
+            public boolean test(Object student) {
+                return ((Student) student).getGPA() >= 4;
+            }
+        };
+
+        MyFunction func = new MyFunction() {
+            @Override
+            public Object apply(Object student) {
+                return ((Student) student).getSurname() + " "
+                        + ((Student) student).getName();
+            }
+        };
+
+
+        MyComparator cmp = new MyComparator() {
+            @Override
+            public int compare(Object student1, Object student2) {
+                return ((Student) student1).getSurname().compareTo(
+                        ((Student) student2).getSurname());
+            }
+        };
+
+        SmartArray studentSmartArray = new BaseArray(students);
+
+        studentSmartArray = new DistinctDecorator(studentSmartArray);
+        studentSmartArray = new FilterDecorator(studentSmartArray, predicate1);
+        studentSmartArray = new FilterDecorator(studentSmartArray, predicate2);
+        studentSmartArray = new SortDecorator(studentSmartArray, cmp);
+        studentSmartArray = new MapDecorator(studentSmartArray, func);
+
+        Object[] result = studentSmartArray.toArray();
+        return Arrays.copyOf(result, result.length, String[].class);
     }
 }

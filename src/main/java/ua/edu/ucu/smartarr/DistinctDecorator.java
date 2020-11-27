@@ -9,7 +9,8 @@ public class DistinctDecorator extends SmartArrayDecorator {
 
     public DistinctDecorator(SmartArray smartArray) {
         super(smartArray);
-        HashSet<Object> temp = new HashSet<>(Arrays.asList(smartArray.toArray()));
+        HashSet<Object> temp = new HashSet<>(
+                                        Arrays.asList(smartArray.toArray()));
         distinctArray = temp.toArray();
     }
 

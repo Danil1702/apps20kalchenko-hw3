@@ -7,7 +7,6 @@ import ua.edu.ucu.functions.MyPredicate;
 import ua.edu.ucu.smartarr.*;
 
 public class SmartArrayApp {
-
     public static Integer[]
     filterPositiveIntegersSortAndMultiplyBy2(Integer[] integers) {
 
@@ -43,18 +42,20 @@ public class SmartArrayApp {
     }
 
     public static String[]
-    findDistinctStudentNamesFrom2ndYearWithGPAgt4AndOrderedBySurname(Student[] students) {
-        MyPredicate predicate1 = new MyPredicate() {
+    findDistinctStudentNamesFrom2ndYearWithGPAgt4AndOrderedBySurname(
+                                                        Student[] students) {
+        final double neededGPA = 4.0;
+        MyPredicate yearCheck = new MyPredicate() {
             @Override
             public boolean test(Object student) {
                 return ((Student) student).getYear() == 2;
             }
         };
 
-        MyPredicate predicate2 = new MyPredicate() {
+        MyPredicate gpaCheck = new MyPredicate() {
             @Override
             public boolean test(Object student) {
-                return ((Student) student).getGPA() >= 4;
+                return ((Student) student).getGpa() >= neededGPA;
             }
         };
 
@@ -69,17 +70,17 @@ public class SmartArrayApp {
 
         MyComparator cmp = new MyComparator() {
             @Override
-            public int compare(Object student1, Object student2) {
-                return ((Student) student1).getSurname().compareTo(
-                        ((Student) student2).getSurname());
+            public int compare(Object first, Object second) {
+                return ((Student) first).getSurname().compareTo(
+                        ((Student) second).getSurname());
             }
         };
 
         SmartArray studentSmartArray = new BaseArray(students);
 
         studentSmartArray = new DistinctDecorator(studentSmartArray);
-        studentSmartArray = new FilterDecorator(studentSmartArray, predicate1);
-        studentSmartArray = new FilterDecorator(studentSmartArray, predicate2);
+        studentSmartArray = new FilterDecorator(studentSmartArray, yearCheck);
+        studentSmartArray = new FilterDecorator(studentSmartArray, gpaCheck);
         studentSmartArray = new SortDecorator(studentSmartArray, cmp);
         studentSmartArray = new MapDecorator(studentSmartArray, func);
 

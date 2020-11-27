@@ -1,5 +1,7 @@
 package ua.edu.ucu.smartarr;
 
+import java.util.Arrays;
+
 abstract class SmartArrayDecorator implements SmartArray {
 
     protected SmartArray smartArray;
